@@ -26,8 +26,14 @@
       </div>
     </div>
 
-    <div v-for="bubble in bubbles" :key="bubble.posX" id="moving-bubbles">
-      <Bubble :size="bubble.size" :posX="bubble.posX" />
+    <div id="moving-bubbles">
+      <Bubble
+        :size="bubble.size"
+        :posX="bubble.posX"
+        :randomColor="bubble.randomColor"
+        v-for="bubble in bubbles"
+        :key="bubble.posX"
+      />
     </div>
   </section>
 
@@ -46,7 +52,8 @@ const bubbles = (() => {
   for (let i = 0; i < 100; i += 1) {
     const size = (Math.random() * (maxSize - minSize)) + minSize;
     const posX = Math.random() * 95;
-    res.push({ size, posX });
+    let randomColor = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+    res.push({ size, posX, randomColor });
   }
 
   return res;
@@ -67,31 +74,40 @@ export default {
 
 window.onload = () => {
   anime(
-    // {
-    //   targets: '#my-name',
-    //   translateY: [50, 0],
-    //   opacity: [0, 1],
-    //   delay: 500,
-    //   duration: 4000,
-    //   direction: 'alternate',
-    //   loop: false,
-    // },
     {
       targets: '#moving-bubbles .bubble',
-      translateY: -500,
+      translateY: (el, i) => -Math.random() * i * 100,
       delay: 500,
-      opacity: 1,
+      opacity: 0.7,
       direction: 'alternate',
       loop: true,
-      duration: (el, i) => Math.random() * (i * 1000),
-    });
+      duration: (el, i) => Math.random() * (i * 2000),
+    },
+  );
+
+  anime(
+    {
+      targets: '#my-name',
+      translateY: [50, 0],
+      opacity: [0, 1],
+      delay: 500,
+      duration: 4000,
+      direction: 'alternate',
+      loop: false,
+    },
+  );
 };
+
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
   .small-image {
     width: 10%;
+  }
+
+  .hero {
+    z-index: 0;
   }
 
   .hero.is-fullheight:before {
@@ -102,5 +118,15 @@ window.onload = () => {
     position: absolute;
     border: 1px solid #e8dfdf;
     margin: 5px;
+  }
+
+  #moving-bubbles {
+    display: block;
+    position: absolute;
+    z-index: 0;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
   }
 </style>
